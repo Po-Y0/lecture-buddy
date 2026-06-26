@@ -1,11 +1,11 @@
 # Project: [Tools for Modern Learners]
 _A brief, one-sentence description of what your project does._
 
-## Team:03 [4T]
-67025954 กิตติณัฏฐ์ ครรชิตานุรักษ์ @Kaxin78 (หัวหน้าทีม)
-67026124 วริศรา ปัญญาแก้ว @Warissara-Tahwan
-67021095 ปาริชาต จันจม @parichatforpj-ux
-67021174 ภูมิภัทร โพทา @Po-Y0
+## Team: 03 [4T]
+- 🧑🏻‍💻67025954 กิตติณัฏฐ์ ครรชิตานุรักษ์ @Kaxin78 (หัวหน้าทีม)
+- 👩🏻‍💻67026124 วริศรา ปัญญาแก้ว @Warissara-Tahwan
+- 👩🏻‍💻67021095 ปาริชาต จันจม @parichatforpj-ux
+- 🧑🏻‍💻67021174 ภูมิภัทร โพทา @Po-Y0
 
 ---
 
