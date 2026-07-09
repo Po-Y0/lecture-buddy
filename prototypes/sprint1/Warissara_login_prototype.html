@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link rel="stylesheet" href="ชื่อตัวเอง_ชื่อfeature_style.css">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Card Container */
+        .login-card {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Title */
+        .login-card h2 {
+            text-align: center;
+            color: #333333;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* Form Groups */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666666;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        /* Primary Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: #357abd;
+        }
+
+        /* Footer Text */
+        .login-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #777777;
+        }
+
+        .login-footer a {
+            color: #4a90e2;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* 🌟 CSS สำหรับกล่องแจ้งเตือน Toast (ขึ้นตรงกลางบนของหน้าจอ) */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333333;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            text-align: center;
+            max-width: 90%;
+            font-weight: 500;
+        }
+
+        /* คลาสที่จะถูกใส่เพิ่มเมื่อต้องการให้แสดง */
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ตกแต่งสีเพิ่มเติมตามประเภทการแจ้งเตือน */
+        .toast.error { background-color: #e74c3c; }   /* สีแดงเมื่อกรอกผิด/ไม่ครบ */
+        .toast.success { background-color: #2ecc71; } /* สีเขียวเมื่อสำเร็จ */
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast"></div>
+
+    <div class="login-card">
+        <h2>Register</h2>
+        
+        <form action="#" method="POST">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="btn-submit">Sign Up</button>
+        </form>
+        
+        <div class="login-footer">
+            Already have an account? <a href="login.html">Sign in.</a>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form');
+        const toast = document.getElementById('toast');
+        let toastTimeout; // เก็บเวลาสำหรับเคลียร์กรณีผู้ใช้กดปุ่มรัวๆ
+
+        // 🌟 ฟังก์ชันสำหรับสั่งให้กล่องข้อความเด้งขึ้นมาแล้วหายไปเองใน 2 วินาที
+        function showToast(message, type = 'error') {
+            // ล้างสถานะเก่าออกก่อน เผื่อมีการกดซ้ำ
+            clearTimeout(toastTimeout);
+            toast.className = 'toast'; 
+            
+            // ใส่ข้อความและคลาสสี (success หรือ error)
+            toast.innerText = message;
+            toast.classList.add(type, 'show');
+
+            // สั่งให้นับเวลา 2000 มิลลิวินาที (2 วินาที) แล้วเอาคลาส 'show' ออกเพื่อซ่อนกล่อง
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+        
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const username = document.getElementById('username')?.value.trim();
+            const password = document.getElementById('password')?.value;
+
+            // 1. ตรวจสอบว่ามีช่องว่างหรือไม่
+            if (!username || !password) {
+                showToast('Please fill in all fields.', 'error');
+                return;
+            }
+
+            // 2. ตรวจสอบว่า ยูสเซอร์เป็น 4T และพาสเวิร์ดเป็น 1234567890 หรือไม่
+            if (username !== '4T' || password !== '1234567890') {
+                showToast('Incorrect Username or Password!', 'error');
+                return; 
+            }
+
+            // 3. หากข้อมูลถูกต้องทั้งหมด (ส่งพารามิเตอร์ 'success' เพื่อให้กล่องเป็นสีเขียว)
+            showToast('Registration successful!', 'success');
+        });
+    });
+</script>
+</body>
+</html>

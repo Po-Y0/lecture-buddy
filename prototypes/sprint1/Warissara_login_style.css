@@ -1,0 +1,97 @@
+/* 1. Body: พื้นหลังขาวล้วน + ฟอนต์สไตล์การ์ตูนหัวมน */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    /* 2. จัดกึ่งกลางหน้าจอแนวตั้งและแนวนอน พร้อมเว้นระยะห่างรอบ ๆ */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem; 
+}
+
+/* 3. Login Card: ดีไซน์แบบ Minimal กลืนไปกับพื้นหลังขาว */
+.login-card {
+    background-color: transparent;
+    width: 100%;
+    max-width: 380px;
+    padding: 2rem;
+}
+
+.login-card h2 {
+    text-align: center;
+    color: #000000;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #000000;
+}
+
+/* 4. Input Fields: พื้นหลังขาว, ขอบสีดำเส้นคมชัด, มุมโค้งมน, ข้อความบอกใบ้สีเทา */
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    background-color: #ffffff;
+    border: 2px solid #000000;
+    border-radius: 25px; /* โค้งมนเด่นชัด */
+    font-size: 1rem;
+    color: #000000;
+    outline: none;
+}
+
+.form-group input::placeholder {
+    color: #888888; /* สีเทา */
+}
+
+/* 5. ปุ่ม Login: พื้นหลังขาว, ขอบดำชัดเจน, มุมโค้งมน พร้อม Effect ตอน Hover */
+.btn-submit {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #ffffff;
+    color: #000000;
+    border: 2px solid #000000;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.btn-submit:hover {
+    transform: scale(1.03); /* ขยายใหญ่ขึ้นเล็กน้อย */
+    box-shadow: 0 0 0 2px #000000; /* เส้นขอบหนา/เข้มขึ้น */
+}
+
+.btn-submit:active {
+    transform: scale(0.98);
+}
+
+/* 6. Footer: ข้อความอยู่ตรงกลาง และลิงก์ขีดเส้นใต้ */
+.login-footer {
+    text-align: center;
+    margin-top: 2rem;
+    font-size: 0.95rem;
+    color: #000000;
+}
+
+.login-footer a {
+    color: #000000;
+    text-decoration: underline; /* ขีดเส้นใต้ */
+    font-weight: bold;
+}
