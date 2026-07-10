@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Subject Management</title>
+
+  <link
+    rel="stylesheet"
+    href="./parichat_edit_delete_subject_style.css"
+  />
+</head>
+
+<body>
+  <main class="subject-container">
+
+    <!-- Subject form -->
+    <section class="card form-card">
+      <h1 id="form-title">Add Subject</h1>
+
+      <form id="subject-form">
+
+        <!-- Subject name -->
+        <div class="form-group">
+          <label for="subject-name">
+            Subject Name <span class="required">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="subject-name"
+            placeholder="Enter subject name"
+            required
+          />
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label for="category">Category</label>
+
+          <select id="category">
+            <option value="General">General</option>
+            <option value="Academic">Academic</option>
+            <option value="Personal">Personal</option>
+            <option value="Work">Work</option>
+            <option value="Language">Language</option>
+            <option value="Business">Business</option>
+            <option value="Skill Up">Skill Up</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Subject code -->
+        <div class="form-group">
+          <label for="subject-code">
+            Subject Code
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <input
+            type="text"
+            id="subject-code"
+            placeholder="For example: CS321"
+          />
+        </div>
+
+        <!-- Subject information -->
+        <div class="form-group">
+          <label for="info">
+            Subject Information
+            <span class="optional">(Optional)</span>
+          </label>
+
+          <textarea
+            id="info"
+            placeholder="Enter subject information"
+            rows="4"
+          ></textarea>
+        </div>
+
+        <!-- Color selection -->
+        <div class="form-group">
+          <label>Subject Color</label>
+
+          <div
+            class="color-options"
+            id="color-options"
+            role="radiogroup"
+            aria-label="Select subject color"
+          >
+            <button
+              type="button"
+              class="color-option selected"
+              data-color="#2563eb"
+              style="background-color: #2563eb"
+              aria-label="Blue"
+              title="Blue"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#7c3aed"
+              style="background-color: #7c3aed"
+              aria-label="Purple"
+              title="Purple"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#db2777"
+              style="background-color: #db2777"
+              aria-label="Pink"
+              title="Pink"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#dc2626"
+              style="background-color: #dc2626"
+              aria-label="Red"
+              title="Red"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#ea580c"
+              style="background-color: #ea580c"
+              aria-label="Orange"
+              title="Orange"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#ca8a04"
+              style="background-color: #ca8a04"
+              aria-label="Yellow"
+              title="Yellow"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#16a34a"
+              style="background-color: #16a34a"
+              aria-label="Green"
+              title="Green"
+            ></button>
+
+            <button
+              type="button"
+              class="color-option"
+              data-color="#0891b2"
+              style="background-color: #0891b2"
+              aria-label="Cyan"
+              title="Cyan"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Icon selection -->
+        <div class="form-group">
+          <label>Subject Icon</label>
+
+          <div
+            class="icon-options"
+            id="icon-options"
+            role="radiogroup"
+            aria-label="Select subject icon"
+          >
+            <button
+              type="button"
+              class="icon-option selected"
+              data-icon="📘"
+              aria-label="Book"
+              title="Book"
+            >
+              📘
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="💻"
+              aria-label="Computer"
+              title="Computer"
+            >
+              💻
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="🧮"
+              aria-label="Mathematics"
+              title="Mathematics"
+            >
+              🧮
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="🔬"
+              aria-label="Science"
+              title="Science"
+            >
+              🔬
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="🌐"
+              aria-label="Language"
+              title="Language"
+            >
+              🌐
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="🎨"
+              aria-label="Design"
+              title="Design"
+            >
+              🎨
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="💼"
+              aria-label="Business"
+              title="Business"
+            >
+              💼
+            </button>
+
+            <button
+              type="button"
+              class="icon-option"
+              data-icon="⭐"
+              aria-label="Favorite"
+              title="Favorite"
+            >
+              ⭐
+            </button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="submit-button">
+            Add Subject
+          </button>
+
+          <button
+            type="button"
+            id="cancel-button"
+            class="cancel-button hidden"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Subject list -->
+    <section class="card list-card">
+      <div class="list-header">
+        <div>
+          <h2>My Subjects</h2>
+        </div>
+
+        <span id="subject-count" class="subject-count">
+          0 Subjects
+        </span>
+      </div>
+
+      <div id="subject-list" class="subject-list"></div>
+    </section>
+  </main>
+
+  <script>
+    const subjectForm = document.getElementById("subject-form");
+    const subjectNameInput = document.getElementById("subject-name");
+    const categoryInput = document.getElementById("category");
+    const subjectCodeInput = document.getElementById("subject-code");
+    const infoInput = document.getElementById("info");
+
+    const subjectList = document.getElementById("subject-list");
+    const subjectCount = document.getElementById("subject-count");
+
+    const formTitle = document.getElementById("form-title");
+    const submitButton = document.getElementById("submit-button");
+    const cancelButton = document.getElementById("cancel-button");
+
+    const colorOptions = document.querySelectorAll(".color-option");
+    const iconOptions = document.querySelectorAll(".icon-option");
+
+    let selectedColor = "#2563eb";
+    let selectedIcon = "📘";
+    let editingSubjectId = null;
+
+    let subjects = [
+      {
+        id: 1,
+        name: "Human Computer Interaction",
+        category: "Computer Science",
+        code: "CS321",
+        info: "Study user experience and user interface design.",
+        color: "#7c3aed",
+        icon: "🎨"
+      },
+      {
+        id: 2,
+        name: "Software Engineering",
+        category: "Computer Science",
+        code: "CS305",
+        info: "Study software development processes and Agile methods.",
+        color: "#2563eb",
+        icon: "💻"
+      }
+    ];
+
+    /*
+      Select subject color
+    */
+    colorOptions.forEach(function (button) {
+      button.addEventListener("click", function () {
+        selectedColor = button.dataset.color;
+
+        colorOptions.forEach(function (option) {
+          option.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+      });
+    });
+
+    /*
+      Select subject icon
+    */
+    iconOptions.forEach(function (button) {
+      button.addEventListener("click", function () {
+        selectedIcon = button.dataset.icon;
+
+        iconOptions.forEach(function (option) {
+          option.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+      });
+    });
+
+    /*
+      Display all subjects
+    */
+    function renderSubjects() {
+      subjectList.innerHTML = "";
+
+      if (subjects.length === 0) {
+        subjectList.innerHTML = `
+          <div class="empty-message">
+            <div class="empty-icon">📚</div>
+
+            <h3>No subjects found</h3>
+
+            <p>
+              Add your first subject using the form.
+            </p>
+          </div>
+        `;
+      } else {
+        subjects.forEach(function (subject) {
+          const subjectItem = document.createElement("article");
+
+          subjectItem.className = "subject-item";
+          subjectItem.style.borderLeftColor = subject.color;
+
+          subjectItem.innerHTML = `
+            <div
+              class="subject-icon"
+              style="background-color: ${subject.color}20"
+            >
+              ${escapeHTML(subject.icon)}
+            </div>
+
+            <div class="subject-details">
+              <div class="subject-title-row">
+                <h3>${escapeHTML(subject.name)}</h3>
+
+                <span
+                  class="category-badge"
+                  style="
+                    background-color: ${subject.color}18;
+                    color: ${subject.color};
+                  "
+                >
+                  ${escapeHTML(subject.category)}
+                </span>
+              </div>
+
+              ${
+                subject.code
+                  ? `
+                    <p
+                      class="subject-code"
+                      style="color: ${subject.color}"
+                    >
+                      ${escapeHTML(subject.code)}
+                    </p>
+                  `
+                  : ""
+              }
+
+              ${
+                subject.info
+                  ? `
+                    <p class="subject-info">
+                      ${escapeHTML(subject.info)}
+                    </p>
+                  `
+                  : `
+                    <p class="subject-info no-information">
+                      No additional information
+                    </p>
+                  `
+              }
+            </div>
+
+            <div class="subject-actions">
+              <button
+                type="button"
+                class="edit-button"
+                data-id="${subject.id}"
+              >
+                Edit
+              </button>
+
+              <button
+                type="button"
+                class="delete-button"
+                data-id="${subject.id}"
+              >
+                Delete
+              </button>
+            </div>
+          `;
+
+          subjectList.appendChild(subjectItem);
+        });
+      }
+
+      const subjectLabel =
+        subjects.length === 1 ? "Subject" : "Subjects";
+
+      subjectCount.textContent =
+        `${subjects.length} ${subjectLabel}`;
+    }
+
+    /*
+      Add or update subject
+    */
+    subjectForm.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const name = subjectNameInput.value.trim();
+      const category = categoryInput.value;
+      const code = subjectCodeInput.value.trim();
+      const info = infoInput.value.trim();
+
+      /*
+        Only subject name is required
+      */
+      if (!name) {
+        alert("Please enter a subject name.");
+        subjectNameInput.focus();
+        return;
+      }
+
+      if (editingSubjectId === null) {
+        addSubject(name, category, code, info);
+      } else {
+        updateSubject(name, category, code, info);
+      }
+
+      resetForm();
+      renderSubjects();
+    });
+
+    /*
+      Edit and delete button events
+    */
+    subjectList.addEventListener("click", function (event) {
+      const clickedButton = event.target.closest("button");
+
+      if (!clickedButton) {
+        return;
+      }
+
+      const subjectId = Number(clickedButton.dataset.id);
+
+      if (clickedButton.classList.contains("edit-button")) {
+        editSubject(subjectId);
+      }
+
+      if (clickedButton.classList.contains("delete-button")) {
+        deleteSubject(subjectId);
+      }
+    });
+
+    cancelButton.addEventListener("click", function () {
+      resetForm();
+    });
+
+    function addSubject(name, category, code, info) {
+      const newSubject = {
+        id: Date.now(),
+        name: name,
+        category: category,
+        code: code,
+        info: info,
+        color: selectedColor,
+        icon: selectedIcon
+      };
+
+      subjects.push(newSubject);
+
+      alert("Subject added successfully.");
+    }
+
+    function editSubject(subjectId) {
+      const selectedSubject = subjects.find(function (subject) {
+        return subject.id === subjectId;
+      });
+
+      if (!selectedSubject) {
+        return;
+      }
+
+      editingSubjectId = selectedSubject.id;
+
+      subjectNameInput.value = selectedSubject.name;
+      categoryInput.value = selectedSubject.category;
+      subjectCodeInput.value = selectedSubject.code;
+      infoInput.value = selectedSubject.info;
+
+      selectedColor = selectedSubject.color;
+      selectedIcon = selectedSubject.icon;
+
+      updateSelectedColor();
+      updateSelectedIcon();
+
+      formTitle.textContent = "Edit Subject";
+      submitButton.textContent = "Save Changes";
+      cancelButton.classList.remove("hidden");
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+
+      subjectNameInput.focus();
+    }
+
+    function updateSubject(name, category, code, info) {
+      subjects = subjects.map(function (subject) {
+        if (subject.id === editingSubjectId) {
+          return {
+            ...subject,
+            name: name,
+            category: category,
+            code: code,
+            info: info,
+            color: selectedColor,
+            icon: selectedIcon
+          };
+        }
+
+        return subject;
+      });
+
+      alert("Subject updated successfully.");
+    }
+
+    function deleteSubject(subjectId) {
+      const selectedSubject = subjects.find(function (subject) {
+        return subject.id === subjectId;
+      });
+
+      if (!selectedSubject) {
+        return;
+      }
+
+      const isConfirmed = confirm(
+        `Are you sure you want to delete "${selectedSubject.name}"?`
+      );
+
+      if (!isConfirmed) {
+        return;
+      }
+
+      subjects = subjects.filter(function (subject) {
+        return subject.id !== subjectId;
+      });
+
+      if (editingSubjectId === subjectId) {
+        resetForm();
+      }
+
+      renderSubjects();
+
+      alert("Subject deleted successfully.");
+    }
+
+    /*
+      Reset form to default values
+    */
+    function resetForm() {
+      subjectForm.reset();
+
+      editingSubjectId = null;
+      selectedColor = "#2563eb";
+      selectedIcon = "📘";
+
+      categoryInput.value = "General";
+
+      updateSelectedColor();
+      updateSelectedIcon();
+
+      formTitle.textContent = "Add Subject";
+      submitButton.textContent = "Add Subject";
+      cancelButton.classList.add("hidden");
+    }
+
+    function updateSelectedColor() {
+      colorOptions.forEach(function (button) {
+        button.classList.toggle(
+          "selected",
+          button.dataset.color === selectedColor
+        );
+      });
+    }
+
+    function updateSelectedIcon() {
+      iconOptions.forEach(function (button) {
+        button.classList.toggle(
+          "selected",
+          button.dataset.icon === selectedIcon
+        );
+      });
+    }
+
+    function escapeHTML(value) {
+      const temporaryElement = document.createElement("div");
+
+      temporaryElement.textContent = String(value);
+
+      return temporaryElement.innerHTML;
+    }
+
+    renderSubjects();
+  </script>
+</body>
+</html>
