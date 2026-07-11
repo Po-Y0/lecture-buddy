@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Subject</title>
+  <link rel="stylesheet" href="./Kittinat_Add_Subject_prototype_style.css">
+</head>
+<body>
+
+  <div class="card">
+    <h1>Add Subject</h1>
+
+    <form>
+      <div class="form-group">
+        <label for="subject-name">Name Subject</label>
+        <input type="text" id="subject-name" placeholder="Enter subject name" />
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category</label>
+        <input type="text" id="category" placeholder="Enter category" />
+      </div>
+
+      <div class="form-group">
+        <label for="subject-code">Code Subject</label>
+        <input type="text" id="subject-code" placeholder="Enter subject code" />
+      </div>
+
+      <div class="form-group">
+        <label for="info">Info</label>
+        <input type="text" id="info" placeholder="Enter subject info" />
+      </div>
+
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.querySelector("form");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const inputs = form.querySelectorAll("input");
+
+      const password = document.getElementById("subject-password");
+      const confirmPassword = document.getElementById("confirm-password");
+
+      const hasEmptyField = Array.from(inputs).some(function (input) {
+        return input.value.trim() === "";
+      });
+
+      if (hasEmptyField) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (password.value !== confirmPassword.value) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      alert("Registration successful! (This is a prototype)");
+    });
+  </script>
+
+</body>
+</html>
