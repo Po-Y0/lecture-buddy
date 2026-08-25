@@ -51,3 +51,46 @@ User personas and key scenarios that drive our development are located in the `/
 
 - **[User Personas](./docs/requirements/personas/)**
 - **[Main User Scenario](./docs/requirements/main_scenario.md)**
+
+# Lecture Buddy — Course Management
+
+## User Story
+
+US-01 — จัดการรายวิชา
+
+As a student, I want to create and manage my courses
+so that I can organize my learning materials by subject.
+
+## Type
+
+Prototype
+
+## Why Prototype?
+
+...
+
+## What This Prototype Can Do
+
+- Create a course
+- Edit a course
+- Delete a course
+- Display course information
+
+## What This Prototype Does Not Do
+
+- No database
+- No authentication
+- No backend
+- No real file upload
+- No persistent data
+- No multi-user support
+
+## User Flow
+
+Add Course → Fill Form → Save → Course Appears
+Edit Course → Update → Save
+Delete Course → Confirm → Remove
+
+## Next Step
+
+...
