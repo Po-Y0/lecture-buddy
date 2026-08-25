@@ -1,0 +1,417 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f7f7f8;
+  color: #202124;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  width: 215px;
+  min-height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #d9dce3;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand {
+  padding: 0 14px 28px;
+}
+
+.brand h2 {
+  margin: 0;
+  color: #0969c8;
+  font-size: 18px;
+}
+
+.brand span {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: #42464d;
+}
+
+.new-session {
+  width: 100%;
+  border: 0;
+  border-radius: 7px;
+  background: #213d8f;
+  color: white;
+  padding: 10px;
+  margin-bottom: 30px;
+}
+
+.sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sidebar nav a {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: #4d535d;
+  font-size: 13px;
+}
+
+.sidebar nav a.active {
+  background: #61a7f4;
+  color: #123c68;
+}
+
+.bottom-nav {
+  gap: 5px !important;
+}
+
+.content {
+  flex: 1;
+  padding: 38px 35px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 34px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 36px;
+  letter-spacing: -1px;
+}
+
+.page-header p {
+  margin: 7px 0 0;
+  color: #555b66;
+}
+
+.primary-button {
+  border: 0;
+  background: #092f7c;
+  color: #fff;
+  border-radius: 7px;
+  padding: 11px 18px;
+  font-weight: 600;
+}
+
+.primary-button:hover {
+  background: #072664;
+}
+
+.secondary-button {
+  background: white;
+  color: #31343a;
+  border: 1px solid #cdd1d8;
+  border-radius: 7px;
+  padding: 10px 17px;
+}
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 18px;
+  max-width: 1000px;
+}
+
+.course-card {
+  background: white;
+  border: 1px solid #d2d5db;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 250px;
+  position: relative;
+}
+
+.course-card::before {
+  content: "";
+  display: block;
+  height: 6px;
+  background: var(--course-color);
+}
+
+.course-content {
+  padding: 16px 18px 18px;
+}
+
+.course-icon {
+  width: 35px;
+  height: 35px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--course-light);
+  color: var(--course-color);
+  font-size: 18px;
+}
+
+.course-menu {
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  border: 0;
+  background: transparent;
+  font-size: 20px;
+}
+
+.course-card h2 {
+  margin: 28px 0 4px;
+  font-size: 19px;
+}
+
+.course-code {
+  color: #60656d;
+  font-size: 12px;
+}
+
+.course-stats {
+  display: flex;
+  gap: 18px;
+  margin: 17px 0;
+  color: #575d66;
+  font-size: 12px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 7px;
+}
+
+.progress {
+  height: 6px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.progress-value {
+  height: 100%;
+  width: var(--progress);
+  background: var(--course-color);
+  border-radius: inherit;
+}
+
+.continue-button {
+  width: 100%;
+  margin-top: 12px;
+  border: 1px solid #cfd3da;
+  background: white;
+  border-radius: 7px;
+  padding: 7px;
+  font-size: 12px;
+}
+
+/* Modal */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(25, 32, 45, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+.hidden {
+  display: none;
+}
+
+.modal-card {
+  width: 560px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+  padding: 24px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.modal-header p {
+  margin: 5px 0 20px;
+  color: #737983;
+  font-size: 12px;
+}
+
+.close-button {
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+}
+
+.drop-zone {
+  border: 1px dashed #b8bfca;
+  border-radius: 8px;
+  text-align: center;
+  padding: 28px;
+  background: #fafbfc;
+}
+
+.upload-icon {
+  font-size: 30px;
+  color: #164ca3;
+}
+
+.drop-zone h3 {
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+
+.drop-zone p {
+  margin: 4px 0 14px;
+  color: #747982;
+  font-size: 12px;
+}
+
+.selected-file {
+  color: #164ca3 !important;
+  font-weight: 600;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.form-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.form-row select {
+  padding: 9px;
+  border: 1px solid #d0d4db;
+  border-radius: 6px;
+  background: white;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.metadata-card {
+  width: 440px;
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  text-align: center;
+}
+
+.success-icon {
+  width: 48px;
+  height: 48px;
+  margin: auto;
+  border-radius: 50%;
+  background: #e2f6ed;
+  color: #07965b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+}
+
+.metadata-card h2 {
+  margin: 15px 0 6px;
+}
+
+.metadata-card > p {
+  color: #6b7078;
+  font-size: 12px;
+}
+
+.metadata-box {
+  margin: 20px 0;
+  padding: 15px;
+  border: 1px solid #d8dbe0;
+  border-radius: 7px;
+  text-align: left;
+}
+
+.metadata-box div {
+  display: flex;
+  justify-content: space-between;
+  padding: 7px 0;
+}
+
+.metadata-box span {
+  color: #777d85;
+  font-size: 10px;
+}
+
+.metadata-box strong {
+  font-size: 12px;
+}
+
+.full {
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .course-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .sidebar {
+    display: none;
+  }
+
+  .content {
+    padding: 20px;
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    gap: 20px;
+    flex-direction: column;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
