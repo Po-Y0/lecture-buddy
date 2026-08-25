@@ -16,7 +16,15 @@ export class CourseManager {
       throw new Error("Course already exists");
     }
 
-    const newCourse = {
+    const newCourse = this.createCourse(course);
+
+    this.courses.push(newCourse);
+
+    return newCourse;
+  }
+
+  createCourse(course) {
+    return {
       id: crypto.randomUUID(),
       name: course.name,
       code: course.code,
@@ -26,10 +34,6 @@ export class CourseManager {
       color: course.color ?? "#4d0b83",
       lightColor: course.lightColor ?? "#ead8ff",
     };
-
-    this.courses.push(newCourse);
-
-    return newCourse;
   }
 
   addDocument(courseCode) {
