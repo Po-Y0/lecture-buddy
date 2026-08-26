@@ -33,3 +33,69 @@ All AI-generated suggestions were reviewed and discussed by team members. The te
 
 AI-generated content was modified when necessary to ensure that it accurately reflected the team's project concept and development constraints.
  main
+
+ # AI Usage
+
+## Tools
+
+- ChatGPT
+
+## Prompts Used
+
+### Prompt 1
+สร้างโครงสร้าง HTML สำหรับ Interactive Prototype ของเว็บแอปชื่อ "Lecture Buddy" สำหรับนักศึกษา โดยอ้างอิง User Story:
+
+"As a student, I want to create and manage my courses so that I can organize my learning materials by subject."
+
+ต้องมี:
+
+1. Header ที่มีชื่อ Lecture Buddy
+2. Section แสดงรายการ My Courses
+3. ปุ่ม "+ Add Course"
+4. Course card ที่แสดง Course Name และ Course Code
+5. ปุ่ม Edit และ Delete ในแต่ละ course card
+6. Modal form สำหรับเพิ่ม/แก้ไขรายวิชา โดยมี Course Name และ Course Code
+7. ปุ่ม Cancel และ Save
+8. ใช้ semantic HTML เช่น header, main, section, article
+9. ใช้ HTML, CSS และ JavaScript แบบ plain เท่านั้น
+10. ห้ามใช้ React, Vue, Bootstrap หรือ external framework
+
+ให้โค้ดอ่านง่ายและเหมาะสำหรับนักศึกษาที่กำลังสร้าง prototype ใน Lab 4
+
+
+### Prompt 2
+ช่วยเพิ่ม JavaScript interaction ให้กับ Course Management Prototype ของ Lecture Buddy โดยไม่ใช้ framework
+
+ต้องรองรับ:
+
+1. เปิดและปิด Add Course modal
+2. เพิ่ม course ใหม่จากข้อมูล Course Name และ Course Code
+3. แสดง course ใหม่ใน course list โดยไม่ต้อง reload หน้า
+4. กด Edit เพื่อเปิดข้อมูล course เดิมใน form
+5. แก้ไข Course Name และ Course Code แล้วบันทึกการเปลี่ยนแปลง
+6. กด Delete แล้วแสดง confirmation ก่อนลบ
+7. หลังลบ course ให้ course card หายจากหน้าเว็บทันที
+8. ตรวจสอบว่า Course Name และ Course Code ไม่เป็นค่าว่าง
+9. ใช้ plain JavaScript เท่านั้น
+10. อธิบายส่วนสำคัญของ JavaScript ที่เพิ่มเข้ามาแบบสั้น ๆ
+
+
+## AI-Generated Parts
+
+AI was used to generate an initial HTML structure
+and suggest JavaScript event-handling logic.
+
+## Parts Written or Modified by the Team
+
+- Course card layout
+- Course form structure
+- CSS styling
+- CRUD interaction logic
+- Validation
+- Confirmation dialog
+- UI text and labels
+
+## Review
+
+The team reviewed and modified AI-generated code
+before using it in the prototype.
