@@ -70,4 +70,52 @@ cd se-sec1-team-03
 
 > 🚧 **Lecture Buddy is currently under development.**
 
+
 โปรเจกต์นี้เป็นส่วนหนึ่งของรายวิชา **Software Engineering Concepts** และอยู่ระหว่างการพัฒนา โดยฟังก์ชันและรายละเอียดของระบบอาจมีการปรับเปลี่ยนตามผลการวิเคราะห์ความต้องการและการพัฒนาในแต่ละ Sprint
+=======
+- **[User Personas](./docs/requirements/personas/)**
+- **[Main User Scenario](./docs/requirements/main_scenario.md)**
+
+# Lecture Buddy — Course Management
+
+## User Story
+
+US-01 — จัดการรายวิชา
+
+As a student, I want to create and manage my courses
+so that I can organize my learning materials by subject.
+
+## Type
+
+Prototype
+
+## Why Prototype?
+
+...
+
+## What This Prototype Can Do
+
+- Create a course
+- Edit a course
+- Delete a course
+- Display course information
+
+## What This Prototype Does Not Do
+
+- No database
+- No authentication
+- No backend
+- No real file upload
+- No persistent data
+- No multi-user support
+
+## User Flow
+
+Add Course → Fill Form → Save → Course Appears
+Edit Course → Update → Save
+Delete Course → Confirm → Remove
+
+## Next Step
+
+...
+

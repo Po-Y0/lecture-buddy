@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lecture Buddy - My Courses</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div>
+        <div class="brand">
+          <h2>Lecture Buddy</h2>
+          <span>Study Companion</span>
+        </div>
+
+        <button class="new-session">＋ New Study Session</button>
+
+        <nav>
+          <a>▦ Dashboard</a>
+          <a class="active">🎓 My Courses</a>
+          <a>▣ Review Center</a>
+          <a>⚑ Pinned Notes</a>
+        </nav>
+      </div>
+
+      <nav class="bottom-nav">
+        <a>❔ Help</a>
+        <a>↪ Logout</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="page-header">
+        <div>
+          <h1>My Courses</h1>
+          <p>Manage your enrolled subjects and track progress.</p>
+        </div>
+
+        <button id="addCourseButton" class="primary-button">
+          ＋ Add Course
+        </button>
+      </header>
+
+      <section id="courseGrid" class="course-grid"></section>
+    </main>
+  </div>
+
+  <!-- Upload Modal -->
+  <div id="uploadModal" class="modal hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h2>Upload Learning Material</h2>
+          <p>Add material to your course.</p>
+        </div>
+
+        <button id="closeModal" class="close-button">×</button>
+      </div>
+
+      <div id="dropZone" class="drop-zone">
+        <div class="upload-icon">☁</div>
+        <h3>Drag and drop files here</h3>
+        <p>or click to browse from your computer</p>
+
+        <input
+          id="fileInput"
+          type="file"
+          accept=".pdf,.doc,.docx,.ppt,.pptx"
+          hidden
+        />
+
+        <button id="browseButton" class="secondary-button">
+          Choose File
+        </button>
+
+        <p id="selectedFile" class="selected-file"></p>
+      </div>
+
+      <div class="form-row">
+        <label>
+          Select Course
+          <select id="courseSelect"></select>
+        </label>
+
+        <label>
+          Subject / Chapter
+          <select id="chapterSelect">
+            <option>Choose a chapter...</option>
+            <option>Chapter 1</option>
+            <option>Chapter 2</option>
+            <option>Chapter 3</option>
+            <option>Chapter 4</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button id="cancelButton" class="secondary-button">
+          Cancel
+        </button>
+
+        <button id="uploadButton" class="primary-button">
+          Upload Material
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metadata Confirmation -->
+  <div id="metadataModal" class="modal hidden">
+    <div class="metadata-card">
+      <div class="success-icon">✓</div>
+
+      <h2>File Uploaded Successfully</h2>
+      <p id="uploadedFileName"></p>
+
+      <div class="metadata-box">
+        <div>
+          <span>COURSE</span>
+          <strong id="metadataCourse"></strong>
+        </div>
+
+        <div>
+          <span>CHAPTER</span>
+          <strong id="metadataChapter"></strong>
+        </div>
+      </div>
+
+      <button id="confirmMetadata" class="primary-button full">
+        Confirm & Save
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
