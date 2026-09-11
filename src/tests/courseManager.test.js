@@ -104,7 +104,7 @@ test("Integration Test - should preserve multiple courses", () => {
     ["CS 401", "CS 320", "CS 250"]
   );
 });
-//////testใหม่//////
+
 test("Unit Test - should reject a course without code", () => {
   const manager = new CourseManager();
 

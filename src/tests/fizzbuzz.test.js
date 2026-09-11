@@ -17,3 +17,7 @@ test("should return FizzBuzz for multiples of 15", () => {
 test("should return the number for other numbers", () => {
   assert.equal(fizzBuzz(1), "1");
 });
+
+test("should return the number for 7", () => {
+  assert.equal(fizzBuzz(7), "7");
+});
