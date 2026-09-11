@@ -5,7 +5,7 @@ export function fizzBuzz(number) {
     result += "Fizz";
   }
 
-  if (number % 5 === 0 && number !== 5) {
+  if (number % 5 === 0) {
     result += "Buzz";
   }
 
