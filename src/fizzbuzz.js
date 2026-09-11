@@ -1,15 +1,13 @@
 export function fizzBuzz(number) {
-  if (number % 15 === 0) {
-    return "FizzBuzz";
-  }
+  let result = "";
 
   if (number % 3 === 0) {
-    return "Fizz";
+    result += "Fizz";
   }
 
   if (number % 5 === 0) {
-    return "Buzz";
+    result += "Buzz";
   }
 
-  return String(number);
+  return result || String(number);
 }
