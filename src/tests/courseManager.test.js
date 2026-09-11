@@ -104,3 +104,45 @@ test("Integration Test - should preserve multiple courses", () => {
     ["CS 401", "CS 320", "CS 250"]
   );
 });
+//////testใหม่//////
+test("Unit Test - should reject a course without code", () => {
+  const manager = new CourseManager();
+
+  assert.throws(
+    () =>
+      manager.addCourse({
+        name: "Software Engineering",
+        code: "",
+      }),
+    /Course name and code are required/
+  );
+});
+
+test("Unit Test - should treat course codes as case-insensitive", () => {
+  const manager = new CourseManager();
+
+  manager.addCourse({
+    name: "Software Engineering",
+    code: "CS 401",
+  });
+
+  assert.throws(
+    () =>
+      manager.addCourse({
+        name: "Software Engineering 2",
+        code: "cs 401",
+      }),
+    /Course already exists/
+  );
+});
+
+test("Unit Test - should use zero as default document count", () => {
+  const manager = new CourseManager();
+
+  const course = manager.addCourse({
+    name: "Database Systems",
+    code: "CS 320",
+  });
+
+  assert.equal(course.documents, 0);
+});
