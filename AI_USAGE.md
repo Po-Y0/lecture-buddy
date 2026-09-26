@@ -127,3 +127,15 @@ and suggest JavaScript event-handling logic.
 The team reviewed and modified AI-generated code
 before using it in the prototype.
 
+
+## Lab 12B - Safety Net Sprint 
+
+เครื่องมือ: - ChatGPT 
+
+Prompt ที่ใช้: 
+1. ช่วยเสนอ test cases ของ validate_course แบ่งเป็น happy, edge, error 
+2. ช่วยอธิบายวิธีเขียน GitHub Actions CI 
+
+ส่วนที่นำมาใช้: - ไอเดีย test cases ที
+
+ทีมได้ตรวจสอบและทำความเข้าใจโค้ดทั้งหมดก่อนส่ง 
