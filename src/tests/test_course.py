@@ -2,7 +2,7 @@
 
 import pytest
 
-from src.course import validate_course
+from course import validate_course
 
 
 # --------------------
