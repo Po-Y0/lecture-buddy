@@ -1,46 +1,104 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { apiGet, apiPost } from "../api/client";
 
 const AuthContext = createContext(null);
 
-const getUsers = () => {
-  try { return JSON.parse(localStorage.getItem("users")) ?? []; }
-  catch { return []; }
-};
+function clearLegacyCredentials() {
+  try {
+    localStorage.removeItem("users");
+    localStorage.removeItem("user");
+    return "";
+  } catch (storageError) {
+    return `Could not clear legacy local credentials: ${storageError.message}`;
+  }
+}
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("user")); }
-    catch { return null; }
-  });
+  const [user, setUser] = useState(null);
+  const [initializing, setInitializing] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
-  // ทุกฟังก์ชันคืน { ok, error } เพื่อให้หน้าจอแสดงข้อความได้
-  const register = (name, email, password) => {
-    const users = getUsers();
-    if (users.some((u) => u.email === email)) {
-      return { ok: false, error: "อีเมลนี้ถูกใช้งานแล้ว" };
+  useEffect(() => {
+    let active = true;
+    const handleUnauthorized = () => setUser(null);
+    window.addEventListener("lecture-buddy:unauthorized", handleUnauthorized);
+    apiGet("/auth/me")
+      .then((currentUser) => {
+        if (active) {
+          setUser(currentUser);
+          const cleanupError = clearLegacyCredentials();
+          if (cleanupError) setError(cleanupError);
+        }
+      })
+      .catch((requestError) => {
+        if (active) {
+          if (requestError.status === 401) {
+            const cleanupError = clearLegacyCredentials();
+            if (cleanupError) setError(cleanupError);
+          } else {
+            setError(requestError.message);
+          }
+        }
+      })
+      .finally(() => {
+        if (active) setInitializing(false);
+      });
+    return () => {
+      active = false;
+      window.removeEventListener("lecture-buddy:unauthorized", handleUnauthorized);
+    };
+  }, []);
+
+  const register = async (name, email, password) => {
+    setBusy(true);
+    setError("");
+    try {
+      await apiPost("/auth/register", { name, email, password });
+      return { ok: true };
+    } catch (requestError) {
+      setError(requestError.message);
+      return { ok: false, error: requestError.message };
+    } finally {
+      setBusy(false);
     }
-    users.push({ id: crypto.randomUUID(), name, email, password });
-    localStorage.setItem("users", JSON.stringify(users));
-    return { ok: true };
   };
 
-  const login = (email, password) => {
-    const found = getUsers().find((u) => u.email === email && u.password === password);
-    if (!found) return { ok: false, error: "อีเมลหรือรหัสผ่านไม่ถูกต้อง" };
-
-    const safeUser = { id: found.id, name: found.name, email: found.email }; // ไม่เก็บรหัสผ่านใน session
-    localStorage.setItem("user", JSON.stringify(safeUser));
-    setUser(safeUser);
-    return { ok: true };
+  const login = async (email, password) => {
+    setBusy(true);
+    setError("");
+    try {
+      const authenticatedUser = await apiPost("/auth/login", { email, password });
+      setUser(authenticatedUser);
+      const cleanupError = clearLegacyCredentials();
+      if (cleanupError) setError(cleanupError);
+      return { ok: true };
+    } catch (requestError) {
+      setError(requestError.message);
+      return { ok: false, error: requestError.message };
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const logout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+  const logout = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      await apiPost("/auth/logout");
+      setUser(null);
+    } catch (requestError) {
+      setError(requestError.message);
+      throw requestError;
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, register, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, initializing, busy, error, register, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

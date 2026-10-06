@@ -1,0 +1,9 @@
+[tool.pytest.ini_options]
+testpaths = ["backend/tests", "src/tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"backend/app/main.py" = ["B008"]
+"backend/app/security.py" = ["B008"]
+"backend/app/routers/*.py" = ["B008"]
+"services/stats-service/app.py" = ["I001"]
+"src/tests/test_course.py" = ["I001"]

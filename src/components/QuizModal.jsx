@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function QuizModal({ questions, onClose, onComplete }) {
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
   const [answered, setAnswered] = useState(0);
+  const [answers, setAnswers] = useState([]);
   const [done, setDone] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const savingRef = useRef(false);
 
   const total = questions.length;
   const q = questions[index];
@@ -14,19 +18,38 @@ export default function QuizModal({ questions, onClose, onComplete }) {
   const choose = (i) => {
     if (hasAnswer) return;
     setSelected(i);
+    setAnswers((previous) => [...previous, { questionId: q.id, answerIndex: i }]);
     setAnswered((n) => n + 1);
     if (i === q.answerIndex) setScore((s) => s + 1);
   };
 
-  // จบได้ทุกเมื่อ: บันทึกคะแนนเท่าที่ตอบแล้ว
-  const finish = () => {
-    if (answered > 0) onComplete?.(score, answered);
+  const finish = async () => {
+    if (savingRef.current) return;
+    if (answered > 0 && onComplete) {
+      savingRef.current = true;
+      setSaving(true);
+      setError("");
+      try {
+        const result = await onComplete(answers);
+        if (result) {
+          setScore(result.score);
+          setAnswered(result.total);
+        }
+      } catch (requestError) {
+        setError(requestError.message);
+        savingRef.current = false;
+        setSaving(false);
+        return;
+      }
+      savingRef.current = false;
+      setSaving(false);
+    }
     setDone(true);
   };
 
-  const next = () => {
+  const next = async () => {
     if (index + 1 >= total) {
-      finish();
+      await finish();
     } else {
       setIndex(index + 1);
       setSelected(null);
@@ -38,6 +61,8 @@ export default function QuizModal({ questions, onClose, onComplete }) {
     setSelected(null);
     setScore(0);
     setAnswered(0);
+    setAnswers([]);
+    setError("");
     setDone(false);
   };
 
@@ -50,12 +75,12 @@ export default function QuizModal({ questions, onClose, onComplete }) {
             <h2>ทำแบบทดสอบเสร็จแล้ว</h2>
             <p className="quiz-score">{score} / {answered}</p>
             <p className="muted">
-              ตอบถูก {Math.round((score / answered) * 100)}%
+              {answered > 0 ? `ตอบถูก ${Math.round((score / answered) * 100)}%` : "ยังไม่ได้ตอบคำถาม"}
               {answered < total && ` · ตอบแล้ว ${answered} จาก ${total} ข้อ`}
             </p>
             <div className="row end">
-              <button className="btn-outline" onClick={restart}>ทำอีกครั้ง</button>
-              <button className="btn-primary" onClick={onClose}>ปิด</button>
+              <button className="btn-outline" onClick={restart} disabled={saving}>ทำอีกครั้ง</button>
+              <button className="btn-primary" onClick={onClose} disabled={saving}>ปิด</button>
             </div>
           </>
         ) : (
@@ -89,14 +114,17 @@ export default function QuizModal({ questions, onClose, onComplete }) {
             </div>
 
             {hasAnswer && <p className="explain muted">{q.explanation}</p>}
+            {error && <p className="error">{error}</p>}
 
             <div className="row end">
               {answered === 0 ? (
-                <button className="btn-outline" onClick={onClose}>ยกเลิก</button>
+                <button className="btn-outline" onClick={onClose} disabled={saving}>ยกเลิก</button>
               ) : (
-                <button className="btn-outline" onClick={finish}>จบการทดสอบ</button>
+                <button className="btn-outline" onClick={finish} disabled={saving}>
+                  {saving ? "กำลังบันทึก..." : "จบการทดสอบ"}
+                </button>
               )}
-              <button className="btn-primary" disabled={!hasAnswer} onClick={next}>
+              <button className="btn-primary" disabled={!hasAnswer || saving} onClick={next}>
                 {index + 1 >= total ? "ดูคะแนน" : "ข้อถัดไป"}
               </button>
             </div>

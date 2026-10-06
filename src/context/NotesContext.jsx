@@ -1,41 +1,148 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { apiDelete, apiGet, apiPatch, apiPost } from "../api/client";
+import { useAuth } from "./AuthContext";
 
 const NotesContext = createContext(null);
 
-const load = () => {
-  try { return JSON.parse(localStorage.getItem("notes")) ?? []; }
-  catch { return []; }
-};
-
 export function NotesProvider({ children }) {
-  const [notes, setNotes] = useState(load);
+  const { user, initializing: authInitializing } = useAuth();
+  const [data, setData] = useState({ ownerId: null, notes: [] });
+  const [requestError, setRequestError] = useState(null);
+  const ownerId = user?.id ?? null;
+  const isCurrentData = data.ownerId === ownerId;
+  const notes = isCurrentData ? data.notes : [];
+  const error = requestError?.ownerId === ownerId ? requestError.message : "";
+  const loading =
+    authInitializing ||
+    (Boolean(user) && !isCurrentData && requestError?.ownerId !== ownerId);
 
-  useEffect(() => localStorage.setItem("notes", JSON.stringify(notes)), [notes]);
+  useEffect(() => {
+    if (authInitializing || !user) return undefined;
+    let active = true;
+    apiGet("/notes")
+      .then((noteList) => {
+        if (!active) return;
+        setData({ ownerId: user.id, notes: noteList });
+        setRequestError(null);
+      })
+      .catch((apiError) => {
+        if (active) setRequestError({ ownerId: user.id, message: apiError.message });
+      });
+    return () => {
+      active = false;
+    };
+  }, [user, authInitializing]);
 
-  // data มี id = แก้ไข, ไม่มี = สร้างใหม่
-  const saveNote = (data) => {
-    const now = Date.now();
-    setNotes((prev) =>
-      data.id
-        ? prev.map((n) => (n.id === data.id ? { ...n, ...data, updatedAt: now } : n))
-        : [...prev, { ...data, id: crypto.randomUUID(), pinned: false, createdAt: now, updatedAt: now }]
-    );
+  const saveNote = async (noteData) => {
+    setRequestError(null);
+    try {
+      const body = {
+        title: noteData.title,
+        content: noteData.content ?? "",
+        tags: noteData.tags ?? [],
+      };
+      const saved = noteData.id
+        ? await apiPatch(`/notes/${encodeURIComponent(noteData.id)}`, {
+            ...body,
+            pinned: noteData.pinned,
+            lastReviewedAt: noteData.lastReviewedAt,
+          })
+        : await apiPost(
+            `/courses/${encodeURIComponent(noteData.courseId)}/notes`,
+            body
+          );
+      setData((previous) => {
+        const existing = previous.ownerId === user.id ? previous.notes : [];
+        return {
+          ownerId: user.id,
+          notes: noteData.id
+            ? existing.map((note) => (note.id === saved.id ? saved : note))
+            : [saved, ...existing],
+        };
+      });
+      return saved;
+    } catch (apiError) {
+      setRequestError({ ownerId: user.id, message: apiError.message });
+      throw apiError;
+    }
   };
 
-  const togglePin = (id) =>
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, pinned: !n.pinned } : n)));
+  const togglePin = async (id) => {
+    const note = notes.find((entry) => entry.id === id);
+    if (!note) return;
+    setRequestError(null);
+    try {
+      const updated = await apiPatch(`/notes/${encodeURIComponent(id)}`, {
+        pinned: !note.pinned,
+      });
+      setData((previous) => ({
+        ownerId: user.id,
+        notes:
+          previous.ownerId === user.id
+            ? previous.notes.map((entry) => (entry.id === id ? updated : entry))
+            : [],
+      }));
+    } catch (apiError) {
+      setRequestError({ ownerId: user.id, message: apiError.message });
+    }
+  };
 
-  const markReviewed = (id) =>
-    setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, lastReviewedAt: Date.now() } : n)));
+  const markReviewed = async (id) => {
+    setRequestError(null);
+    try {
+      const updated = await apiPatch(`/notes/${encodeURIComponent(id)}`, {
+        lastReviewedAt: Date.now(),
+      });
+      setData((previous) => ({
+        ownerId: user.id,
+        notes:
+          previous.ownerId === user.id
+            ? previous.notes.map((entry) => (entry.id === id ? updated : entry))
+            : [],
+      }));
+    } catch (apiError) {
+      setRequestError({ ownerId: user.id, message: apiError.message });
+    }
+  };
 
-  const deleteNote = (id) => setNotes((prev) => prev.filter((n) => n.id !== id));
+  const deleteNote = async (id) => {
+    setRequestError(null);
+    try {
+      await apiDelete(`/notes/${encodeURIComponent(id)}`);
+      setData((previous) => ({
+        ownerId: user.id,
+        notes:
+          previous.ownerId === user.id
+            ? previous.notes.filter((note) => note.id !== id)
+            : [],
+      }));
+    } catch (apiError) {
+      setRequestError({ ownerId: user.id, message: apiError.message });
+    }
+  };
 
-  const deleteNotesByCourse = (courseId) =>
-    setNotes((prev) => prev.filter((n) => n.courseId !== courseId));
+  const deleteNotesByCourse = (courseId) => {
+    setData((previous) => ({
+      ownerId,
+      notes:
+        previous.ownerId === ownerId
+          ? previous.notes.filter((note) => note.courseId !== courseId)
+          : [],
+    }));
+  };
 
   return (
     <NotesContext.Provider
-      value={{ notes, saveNote, togglePin, markReviewed, deleteNote, deleteNotesByCourse }}
+      value={{
+        notes,
+        loading,
+        error,
+        saveNote,
+        togglePin,
+        markReviewed,
+        deleteNote,
+        deleteNotesByCourse,
+      }}
     >
       {children}
     </NotesContext.Provider>

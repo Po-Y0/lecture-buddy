@@ -7,12 +7,22 @@ export default function CourseModal({ initial, onSave, onClose }) {
   const [form, setForm] = useState(
     initial ?? { name: "", color: COLORS[0], icon: ICONS[0] }
   );
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) return;
-    onSave({ ...form, name: form.name.trim() });
-    onClose();
+    if (!form.name.trim() || saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      await onSave({ ...form, name: form.name.trim() });
+      onClose();
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -41,6 +51,8 @@ export default function CourseModal({ initial, onSave, onClose }) {
           ))}
         </div>
 
+        {error && <p className="error">{error}</p>}
+
         <p className="field-label">สี</p>
         <div className="picker">
           {COLORS.map((c) => (
@@ -55,8 +67,10 @@ export default function CourseModal({ initial, onSave, onClose }) {
         </div>
 
         <div className="row end">
-          <button type="button" className="btn-outline" onClick={onClose}>ยกเลิก</button>
-          <button type="submit" className="btn-primary">บันทึก</button>
+          <button type="button" className="btn-outline" onClick={onClose} disabled={saving}>ยกเลิก</button>
+          <button type="submit" className="btn-primary" disabled={saving}>
+            {saving ? "กำลังบันทึก..." : "บันทึก"}
+          </button>
         </div>
       </form>
     </div>
