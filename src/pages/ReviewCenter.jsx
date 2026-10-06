@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCourses } from "../context/CoursesContext";
 import { useNotes } from "../context/NotesContext";
@@ -12,17 +12,30 @@ const REVIEW_AFTER_DAYS = 3;
 const DAY = 24 * 60 * 60 * 1000;
 
 export default function ReviewCenter() {
-  const { courses, sources } = useCourses();
-  const { notes, markReviewed } = useNotes();
+  const { courses, sources, loading: coursesLoading } = useCourses();
+  const { notes, markReviewed, loading: notesLoading, error: noteError } = useNotes();
   const navigate = useNavigate();
 
-  const [results, setResults] = useState(getQuizResults);
+  const [results, setResults] = useState([]);
   const [loadingId, setLoadingId] = useState(null);
   const [setupCourse, setSetupCourse] = useState(null); // วิชาที่กำลังตั้งค่าแบบทดสอบ
-  const [active, setActive] = useState(null); // { course, questions }
+  const [active, setActive] = useState(null); // { course, quizId, questions }
   const [error, setError] = useState("");
+  const [now] = useState(() => Date.now());
 
-  const now = Date.now();
+  useEffect(() => {
+    let activeRequest = true;
+    getQuizResults()
+      .then((history) => {
+        if (activeRequest) setResults(history);
+      })
+      .catch((requestError) => {
+        if (activeRequest) setError(requestError.message);
+      });
+    return () => {
+      activeRequest = false;
+    };
+  }, []);
 
   // ---------- คิวทบทวน ----------
   const scheduled = notes.map((note) => {
@@ -77,24 +90,20 @@ export default function ReviewCenter() {
     setLoadingId(course.id);
     setError("");
     try {
-      const { questions } = await generateQuiz({
-        course,
-        sources: sources.filter((s) => s.courseId === course.id),
-        notes: notes.filter((n) => n.courseId === course.id),
-        count,
-      });
-      setActive({ course, questions });
-    } catch {
-      setError("เตรียมแบบทดสอบไม่สำเร็จ ลองอีกครั้ง");
+      const quiz = await generateQuiz({ course, count });
+      setActive({ course, quizId: quiz.quizId, questions: quiz.questions });
+    } catch (requestError) {
+      setError(requestError.message);
     } finally {
       setSetupCourse(null);
       setLoadingId(null);
     }
   };
 
-  const handleComplete = (score, total) => {
-    addQuizResult({ courseId: active.course.id, score, total });
-    setResults(getQuizResults());
+  const handleComplete = async (answers) => {
+    const result = await addQuizResult({ quizId: active.quizId, answers });
+    setResults((previous) => [result, ...previous]);
+    return result;
   };
 
   const materialCount = (courseId) =>
@@ -114,6 +123,7 @@ export default function ReviewCenter() {
       <h1 className="page-title">Review Center</h1>
       <p className="subtitle">ทบทวนเนื้อหา และทดสอบความเข้าใจ</p>
 
+      {(coursesLoading || notesLoading) && <p className="muted">กำลังโหลดข้อมูล...</p>}
       <div className="stats">
         <div className="stat"><strong>{queue.length}</strong><span>ถึงเวลาทบทวน</span></div>
         <div className="stat"><strong>{upcoming.length}</strong><span>กำลังจะถึง</span></div>
@@ -155,8 +165,8 @@ export default function ReviewCenter() {
       {/* ---------- ฝึกทำข้อสอบ ---------- */}
       <section className="panel review-section">
         <h2>ฝึกทำข้อสอบ</h2>
-        <p className="muted small">โหมดทดลอง: คำถามเป็นข้อความตัวอย่างจนกว่าจะเชื่อมต่อ AI</p>
-        {error && <p className="error">{error}</p>}
+        <p className="muted small">สร้างแบบทดสอบจากไฟล์และโน้ตของแต่ละวิชา</p>
+        {(error || noteError) && <p className="error">{error || noteError}</p>}
 
         {courses.length === 0 ? (
           <p className="muted">เพิ่มวิชาก่อนเพื่อเริ่มฝึกทำข้อสอบ</p>

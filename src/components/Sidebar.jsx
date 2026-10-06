@@ -19,11 +19,17 @@ export default function Sidebar({ onQuickAdd, onSearch }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogout = () => {
-    setConfirmOpen(false);
-    logout();
-    navigate("/login");
+  const handleLogout = async () => {
+    setError("");
+    try {
+      await logout();
+      setConfirmOpen(false);
+      navigate("/login");
+    } catch (requestError) {
+      setError(requestError.message);
+    }
   };
 
   const linkClass = ({ isActive }) => (isActive ? "nav-link active" : "nav-link");
@@ -67,6 +73,7 @@ export default function Sidebar({ onQuickAdd, onSearch }) {
         </div>
 
         <div className="side-bottom nav">
+          {error && <p className="error">{error}</p>}
           <a className="nav-link" href="#">
             <CircleHelp {...ICON} />
             <span>Help</span>

@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useCourses } from "../context/CoursesContext";
 import NotesPanel from "../components/NotesPanel";
 import AiPanel from "../components/AiPanel";
+import { sourceDownloadUrl } from "../api/client";
 
 const ACCEPT = ".pdf,.txt,.md,.docx,.pptx";
 
@@ -12,9 +13,11 @@ const formatSize = (bytes) =>
 export default function CourseDetail() {
   // Hook ทุกตัวอยู่ในฟังก์ชัน และอยู่ก่อน return ตัวแรก
   const { id } = useParams();
-  const { courses, sources, addSources, removeSource } = useCourses();
+  const { courses, sources, addSources, removeSource, loading } = useCourses();
   const inputRef = useRef(null);
   const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
 
   const course = courses.find((c) => c.id === id);
 
@@ -22,13 +25,32 @@ export default function CourseDetail() {
     if (course) localStorage.setItem("lastCourseId", id);
   }, [id, course]);
 
+  if (loading) return <p className="muted">กำลังโหลดวิชา...</p>;
   if (!course) return <p>ไม่พบวิชานี้ <Link to="/courses">กลับ</Link></p>;
 
   const mySources = sources.filter((s) => s.courseId === id);
 
-  const handleFiles = (fileList) => {
+  const handleFiles = async (fileList) => {
     const files = Array.from(fileList);
-    if (files.length) addSources(id, files);
+    if (!files.length) return;
+    setError("");
+    setUploading(true);
+    try {
+      await addSources(id, files);
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveSource = async (sourceId) => {
+    setError("");
+    try {
+      await removeSource(sourceId);
+    } catch (requestError) {
+      setError(requestError.message);
+    }
   };
 
   const onDrop = (e) => {
@@ -46,11 +68,13 @@ export default function CourseDetail() {
         <h1 className="page-title">{course.name}</h1>
       </div>
 
-        <AiPanel course={course} sources={mySources} />
+      <AiPanel course={course} sources={mySources} />
         
       <div className="detail-layout">
         <section className="panel">
           <h2>Sources ({mySources.length})</h2>
+          {error && <p className="error">{error}</p>}
+          {uploading && <p className="muted">กำลังอัปโหลดและประมวลผลไฟล์...</p>}
 
           <div
             className={`dropzone ${dragging ? "dragging" : ""}`}
@@ -67,6 +91,7 @@ export default function CourseDetail() {
               multiple
               accept={ACCEPT}
               hidden
+              disabled={uploading}
               onChange={(e) => { handleFiles(e.target.files); e.target.value = ""; }}
             />
           </div>
@@ -76,7 +101,10 @@ export default function CourseDetail() {
               <li key={s.id}>
                 <span>📄 {s.name}</span>
                 <span className="muted small">{formatSize(s.size)}</span>
-                <button className="icon-btn" aria-label={`Remove ${s.name}`} onClick={() => removeSource(s.id)}>✕</button>
+                <a className="btn-outline small-btn" href={sourceDownloadUrl(s.id)} download={s.name}>
+                  Download
+                </a>
+                <button className="icon-btn" aria-label={`Remove ${s.name}`} onClick={() => handleRemoveSource(s.id)}>✕</button>
               </li>
             ))}
           </ul>

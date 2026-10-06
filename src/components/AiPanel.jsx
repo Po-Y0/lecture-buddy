@@ -12,6 +12,7 @@ export default function AiPanel({ course, sources }) {
   const [saved, setSaved] = useState(false);
   const [setupOpen, setSetupOpen] = useState(false);
   const [questions, setQuestions] = useState(null);
+  const [quizId, setQuizId] = useState(null);
   const [error, setError] = useState("");
 
   const myNotes = notes.filter((n) => n.courseId === course.id);
@@ -25,8 +26,8 @@ export default function AiPanel({ course, sources }) {
       const result = await summarizeCourse(input);
       setSummary(result.summary);
       setSaved(false);
-    } catch {
-      setError("เกิดข้อผิดพลาด ลองอีกครั้ง");
+    } catch (requestError) {
+      setError(requestError.message);
     } finally {
       setLoading(null);
     }
@@ -38,29 +39,35 @@ export default function AiPanel({ course, sources }) {
     try {
       const result = await generateQuiz({ ...input, count });
       setQuestions(result.questions);
-    } catch {
-      setError("เตรียมแบบทดสอบไม่สำเร็จ ลองอีกครั้ง");
+      setQuizId(result.quizId);
+    } catch (requestError) {
+      setError(requestError.message);
     } finally {
       setSetupOpen(false);
       setLoading(null);
     }
   };
 
-  const saveSummary = () => {
-    saveNote({
-      courseId: course.id,
-      title: `สรุปโดย AI (${new Date().toLocaleDateString()})`,
-      content: summary,
-      tags: ["ai-summary"],
-    });
-    setSaved(true);
+  const saveSummary = async () => {
+    setError("");
+    try {
+      await saveNote({
+        courseId: course.id,
+        title: `สรุปโดย AI (${new Date().toLocaleDateString()})`,
+        content: summary,
+        tags: ["ai-summary"],
+      });
+      setSaved(true);
+    } catch (requestError) {
+      setError(requestError.message);
+    }
   };
 
   return (
     <section className="panel ai-panel">
       <h2>เครื่องมือ AI ช่วยเรียน</h2>
       <p className="muted small">
-        โหมดทดลอง: ผลลัพธ์เป็นข้อความตัวอย่างจนกว่าจะเชื่อมต่อบริการ AI
+        สรุปเนื้อหาและสร้างแบบทดสอบจากโน้ตกับไฟล์ของวิชานี้
       </p>
 
       <div className="ai-actions">
@@ -110,8 +117,8 @@ export default function AiPanel({ course, sources }) {
       {questions && (
         <QuizModal
           questions={questions}
-          onClose={() => setQuestions(null)}
-          onComplete={(score, total) => addQuizResult({ courseId: course.id, score, total })}
+          onClose={() => { setQuestions(null); setQuizId(null); }}
+          onComplete={(answers) => addQuizResult({ quizId, answers })}
         />
       )}
     </section>

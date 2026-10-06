@@ -3,8 +3,10 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import QuickAddModal from "./QuickAddModal";
 import SearchModal from "./SearchModal";
+import { useAuth } from "../context/AuthContext";
 
 export default function Layout() {
+  const { error: authError } = useAuth();
   const [quickOpen, setQuickOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
@@ -28,6 +30,7 @@ export default function Layout() {
       />
 
       <main className="content">
+        {authError && <p className="error">{authError}</p>}
         <Outlet />
       </main>
 

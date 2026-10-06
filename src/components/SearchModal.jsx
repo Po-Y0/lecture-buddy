@@ -1,41 +1,42 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCourses } from "../context/CoursesContext";
-import { useNotes } from "../context/NotesContext";
+import { apiGet } from "../api/client";
 
 export default function SearchModal({ onClose }) {
-  const { courses, sources } = useCourses();
-  const { notes } = useNotes();
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
+  const [results, setResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState("");
 
-  const results = useMemo(() => {
+  useEffect(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return [];
+    if (!q) {
+      return undefined;
+    }
 
-    const courseName = (id) => courses.find((c) => c.id === id)?.name ?? "";
-    const list = [];
-
-    courses
-      .filter((c) => c.name.toLowerCase().includes(q))
-      .forEach((c) => list.push({ key: `c-${c.id}`, type: "Course", title: c.name, detail: "", courseId: c.id }));
-
-    notes
-      .filter(
-        (n) =>
-          n.title.toLowerCase().includes(q) ||
-          n.content.toLowerCase().includes(q) ||
-          n.tags.some((t) => t.includes(q))
-      )
-      .forEach((n) => list.push({ key: `n-${n.id}`, type: "Note", title: n.title, detail: courseName(n.courseId), courseId: n.courseId }));
-
-    sources
-      .filter((s) => s.name.toLowerCase().includes(q))
-      .forEach((s) => list.push({ key: `s-${s.id}`, type: "File", title: s.name, detail: courseName(s.courseId), courseId: s.courseId }));
-
-    return list.slice(0, 20);
-  }, [query, courses, notes, sources]);
+    let activeRequest = true;
+    const timer = setTimeout(() => {
+      apiGet(`/search?q=${encodeURIComponent(q)}`)
+        .then((matches) => {
+          if (activeRequest) setResults(matches);
+        })
+        .catch((requestError) => {
+          if (activeRequest) {
+            setResults([]);
+            setError(requestError.message);
+          }
+        })
+        .finally(() => {
+          if (activeRequest) setSearching(false);
+        });
+    }, 150);
+    return () => {
+      activeRequest = false;
+      clearTimeout(timer);
+    };
+  }, [query]);
 
   const open = (r) => {
     onClose();
@@ -57,12 +58,20 @@ export default function SearchModal({ onClose }) {
           autoFocus
           placeholder="Search courses, notes and files..."
           value={query}
-          onChange={(e) => { setQuery(e.target.value); setActive(0); }}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setActive(0);
+            setResults([]);
+            setSearching(Boolean(e.target.value.trim()));
+            setError("");
+          }}
           onKeyDown={handleKey}
         />
 
         {query.trim() && results.length === 0 && (
-          <p className="muted small search-empty">No results for "{query.trim()}".</p>
+          <p className={error ? "error small search-empty" : "muted small search-empty"}>
+            {error || (searching ? "Searching..." : `No results for "${query.trim()}".`)}
+          </p>
         )}
 
         {results.length > 0 && (

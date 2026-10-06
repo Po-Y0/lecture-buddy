@@ -219,6 +219,12 @@ Non-Functional Requirements กำหนดคุณภาพ ประสิท
 
 ---
 
+## Implementation Notes
+
+- The API enforces passwords of at least 8 characters with at least one letter and one digit, and expires the server-side cookie session after 30 minutes of inactivity.
+- Uploads are limited to 20 MiB per file and extract text from PDF, DOCX, PPTX, TXT, and MD. OCR is not part of the current MVP; scanned/image-only PDFs return an explicit extraction error.
+- Local filesystem upload storage is for development and single-instance persistent-volume deployments. Production must configure durable storage, backups, HTTPS, and `SESSION_COOKIE_SECURE=true`.
+
 ## Requirements Traceability
 
 Requirements ของ Lecture Buddy เชื่อมโยงกันตั้งแต่ **Persona → Scenario → User Story → Functional Requirement → Non-Functional Requirement**

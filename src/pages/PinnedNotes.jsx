@@ -3,7 +3,7 @@ import { useNotes } from "../context/NotesContext";
 import { useCourses } from "../context/CoursesContext";
 
 export default function PinnedNotes() {
-  const { notes, togglePin } = useNotes();
+  const { notes, togglePin, loading, error } = useNotes();
   const { courses } = useCourses();
   const navigate = useNavigate();
 
@@ -25,8 +25,10 @@ export default function PinnedNotes() {
       <p className="subtitle">
         โน้ตที่ปักหมุดไว้{total > 0 ? ` · ${total} รายการ` : ""}
       </p>
+      {error && <p className="error">{error}</p>}
+      {loading && <p className="muted">กำลังโหลดโน้ต...</p>}
 
-      {groups.length === 0 ? (
+      {!loading && groups.length === 0 ? (
         <p className="empty">
           ยังไม่มีโน้ตที่ปักหมุด กดไอคอนหมุดที่โน้ตในหน้าวิชาเพื่อเก็บไว้ที่นี่
         </p>

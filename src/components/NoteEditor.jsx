@@ -5,6 +5,8 @@ export default function NoteEditor({ initial, onSave, onClose }) {
   const [content, setContent] = useState(initial.content ?? "");
   const [tags, setTags] = useState(initial.tags ?? []);
   const [tagInput, setTagInput] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const addTag = () => {
     const t = tagInput.trim().toLowerCase().replace(/^#/, "");
@@ -19,11 +21,19 @@ export default function NoteEditor({ initial, onSave, onClose }) {
     }
   };
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    if (!title.trim()) return;
-    onSave({ ...initial, title: title.trim(), content, tags });
-    onClose();
+    if (!title.trim() || saving) return;
+    setSaving(true);
+    setError("");
+    try {
+      await onSave({ ...initial, title: title.trim(), content, tags });
+      onClose();
+    } catch (requestError) {
+      setError(requestError.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -56,9 +66,13 @@ export default function NoteEditor({ initial, onSave, onClose }) {
           />
         </div>
 
+        {error && <p className="error">{error}</p>}
+
         <div className="row end">
-          <button type="button" className="btn-outline" onClick={onClose}>ยกเลิก</button>
-          <button type="submit" className="btn-primary">บันทึก</button>
+          <button type="button" className="btn-outline" onClick={onClose} disabled={saving}>ยกเลิก</button>
+          <button type="submit" className="btn-primary" disabled={saving}>
+            {saving ? "กำลังบันทึก..." : "บันทึก"}
+          </button>
         </div>
       </form>
     </div>

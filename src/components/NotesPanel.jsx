@@ -5,7 +5,7 @@ import { useCourses } from "../context/CoursesContext";
 import { exportCourseNotes } from "../utils/exportNotes";
 
 export default function NotesPanel({ courseId }) {
-  const { notes, saveNote, togglePin, deleteNote } = useNotes();
+  const { notes, saveNote, togglePin, deleteNote, loading, error } = useNotes();
   const { courses } = useCourses();
   const course = courses.find((c) => c.id === courseId);
   const [query, setQuery] = useState("");
@@ -41,6 +41,9 @@ export default function NotesPanel({ courseId }) {
             </button>
         </div>
         </div>
+
+      {error && <p className="error">{error}</p>}
+      {loading && <p className="muted">กำลังโหลดโน้ต...</p>}
 
       <input
         className="search"

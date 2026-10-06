@@ -6,11 +6,12 @@ import { useCourses } from "../context/CoursesContext";
 import { useNotes } from "../context/NotesContext";
 
 export default function Courses() {
-  const { courses, sources, saveCourse, deleteCourse } = useCourses();
+  const { courses, sources, saveCourse, deleteCourse, loading, error: courseError } = useCourses();
   const { notes, deleteNotesByCourse } = useNotes();
   const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
+  const [error, setError] = useState("");
 
   // วิชาที่เปิดล่าสุด (บันทึกไว้ตอนเข้าหน้าวิชา)
   const last = courses.find((c) => c.id === localStorage.getItem("lastCourseId"));
@@ -21,10 +22,15 @@ export default function Courses() {
   const openAdd = () => { setEditing(null); setModalOpen(true); };
   const openEdit = (course) => { setEditing(course); setModalOpen(true); };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (confirm("ลบวิชานี้ รวมถึงไฟล์และโน้ตทั้งหมดในวิชาใช่ไหม?")) {
-      deleteCourse(id);
-      deleteNotesByCourse(id);
+      setError("");
+      try {
+        await deleteCourse(id);
+        deleteNotesByCourse(id);
+      } catch (requestError) {
+        setError(requestError.message);
+      }
     }
   };
 
@@ -37,6 +43,9 @@ export default function Courses() {
         </div>
         <button className="btn-primary" onClick={openAdd}>+ Add course</button>
       </div>
+
+      {(error || courseError) && <p className="error">{error || courseError}</p>}
+      {loading && <p className="muted">กำลังโหลดวิชา...</p>}
 
       {last && (
         <div className="resume" style={{ "--accent": last.color }}>
@@ -51,7 +60,7 @@ export default function Courses() {
         </div>
       )}
 
-      {courses.length === 0 ? (
+      {!loading && courses.length === 0 ? (
         <p className="empty">ยังไม่มีวิชา เพิ่มวิชาแรกเพื่อเริ่มจัดเก็บโน้ตการเรียน</p>
       ) : (
         <div className="grid">

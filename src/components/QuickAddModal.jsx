@@ -7,7 +7,7 @@ const ACCEPT = ".pdf,.txt,.md,.docx,.pptx";
 
 export default function QuickAddModal({ onClose }) {
   // Hook ทุกตัวอยู่ก่อน return เสมอ
-  const { courses, addSources } = useCourses();
+  const { courses, addSources, loading } = useCourses();
   const { saveNote } = useNotes();
   const navigate = useNavigate();
   const inputRef = useRef(null);
@@ -21,7 +21,12 @@ export default function QuickAddModal({ onClose }) {
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
   const [dragging, setDragging] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
 
+  if (loading) {
+    return <div className="overlay"><p className="muted">กำลังโหลดข้อมูล...</p></div>;
+  }
   // ยังไม่มีวิชา: พาไปสร้างวิชาก่อน
   if (courses.length === 0) {
     return (
@@ -46,25 +51,35 @@ export default function QuickAddModal({ onClose }) {
   const canSave = mode === "note" ? title.trim().length > 0 : files.length > 0;
 
   const addFiles = (list) => {
-  const picked = Array.from(list);               // คัดลอกทันที ก่อนที่ช่องเลือกไฟล์จะถูกล้าง
-  setFiles((prev) => [...prev, ...picked]);
-};
+      const picked = Array.from(list);
+      setFiles((prev) => [...prev, ...picked]);
+    };
   const removeFile = (index) => setFiles((prev) => prev.filter((_, i) => i !== index));
 
-  const submit = (e) => {
+    const submit = async (e) => {
     e.preventDefault();
-    if (!canSave) return;
+      if (!canSave || busy) return;
 
-    if (mode === "note") {
-      saveNote({ courseId, title: title.trim(), content, tags: [] });
-    } else {
-      addSources(courseId, files);
-    }
-
-    localStorage.setItem("lastCourseId", courseId);
-    onClose();
-    navigate(`/courses/${courseId}`);
-  };
+      setBusy(true);
+      setError("");
+      try {
+        if (mode === "note") {
+          await saveNote({ courseId, title: title.trim(), content, tags: [] });
+        } else {
+          await addSources(courseId, files);
+        }
+        localStorage.setItem("lastCourseId", courseId);
+        onClose();
+        navigate(`/courses/${courseId}`);
+      } catch (requestError) {
+        if (requestError.uploadedCount) {
+          setFiles((previous) => previous.slice(requestError.uploadedCount));
+        }
+        setError(requestError.message);
+      } finally {
+        setBusy(false);
+      }
+    };
 
   return (
     <div className="overlay" onClick={onClose}>
@@ -114,15 +129,16 @@ export default function QuickAddModal({ onClose }) {
           <>
             <div
               className={`dropzone ${dragging ? "dragging" : ""}`}
-              onClick={() => inputRef.current.click()}
-              onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+              onClick={() => !busy && inputRef.current.click()}
+              onDragOver={(e) => { e.preventDefault(); if (!busy) setDragging(true); }}
               onDragLeave={() => setDragging(false)}
-              onDrop={(e) => { e.preventDefault(); setDragging(false); addFiles(e.dataTransfer.files); }}
+              onDrop={(e) => { e.preventDefault(); setDragging(false); if (!busy) addFiles(e.dataTransfer.files); }}
             >
               <p><strong>ลากไฟล์มาวางที่นี่</strong></p>
               <p className="muted small">หรือคลิกเพื่อเลือกไฟล์ (PDF, DOCX, PPTX, TXT, MD)</p>
               <input
                 ref={inputRef} type="file" multiple accept={ACCEPT} hidden
+                disabled={busy}
                 onChange={(e) => { addFiles(e.target.files); e.target.value = ""; }}
               />
             </div>
@@ -140,10 +156,12 @@ export default function QuickAddModal({ onClose }) {
           </>
         )}
 
+        {error && <p className="error">{error}</p>}
+
         <div className="row end">
-          <button type="button" className="btn-outline" onClick={onClose}>ยกเลิก</button>
-          <button type="submit" className="btn-primary" disabled={!canSave}>
-            {mode === "note" ? "บันทึก" : "เพิ่มไฟล์"}
+          <button type="button" className="btn-outline" onClick={onClose} disabled={busy}>ยกเลิก</button>
+          <button type="submit" className="btn-primary" disabled={!canSave || busy}>
+            {busy ? "กำลังบันทึก..." : mode === "note" ? "บันทึก" : "เพิ่มไฟล์"}
           </button>
         </div>
       </form>
