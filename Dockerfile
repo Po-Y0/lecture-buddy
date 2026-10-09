@@ -13,4 +13,4 @@ EXPOSE 8000
 
 USER nobody
 
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "python -m alembic -c backend/alembic.ini upgrade head && exec uvicorn backend.app.main:app --host 0.0.0.0 --port \"${PORT:-8000}\""]
