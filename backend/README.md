@@ -17,6 +17,10 @@ Run the frontend with `npm run dev`; Vite proxies `/api` to port 8000. Override 
 
 For an all-container development setup, `docker compose up --build api` starts PostgreSQL and the API, applies migrations, and stores uploads in the persistent `lecture_buddy_uploads` volume. Compose database credentials are for local development only.
 
+## Render deployment
+
+Deploy the repository root as a Docker Web Service. The Docker image applies Alembic migrations before starting Uvicorn, and listens on Render's `PORT` (falling back to port 8000 for local use). Set `DATABASE_URL` to the Render PostgreSQL connection URL; `postgres://` and `postgresql://` URLs are normalized to the installed Psycopg 3 driver automatically. Set `WEB_ORIGIN` to the exact frontend origin and `SESSION_COOKIE_SECURE=true`. For persistent uploads, mount a disk at `/app/data` and set `UPLOAD_DIR=/app/data/uploads`. Configure the frontend build with `VITE_API_BASE_URL=https://<api-host>/api`.
+
 ## Environment
 
 | Variable | Default | Purpose |
